@@ -41,11 +41,11 @@ const (
 	WasmAccount
 )
 
-func exportAccounts(ctx sdk.Context, keeper Keeper) (filePath string) {
+func exportAccounts(ctx sdk.Context, keeper Keeper, name string) (filePath string) {
 	pt := time.Now().UTC().Format(time.RFC3339)
 	rootDir := viper.GetString(cli.HomeFlag)
 
-	accFileName := fmt.Sprintf("accounts-%d-%s.csv", ctx.BlockHeight(), pt)
+	accFileName := fmt.Sprintf("accounts-%s-%d-%s.csv", name, ctx.BlockHeight(), pt)
 
 	// 1. open log file
 	logFile, logWr, err := openLogFile()
@@ -84,7 +84,7 @@ func exportAccounts(ctx sdk.Context, keeper Keeper) (filePath string) {
 		}
 
 		//account.SpendableCoins()
-		oktBalance := account.GetCoins().AmountOf(sdk.DefaultBondDenom)
+		oktBalance := account.GetCoins().AmountOf(name)
 		if !oktBalance.GT(sdk.ZeroDec()) {
 			return false
 		}
